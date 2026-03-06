@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/Samples/">
+    <Project Path="Samples\MinimalWebApi\MinimalWebApi.csproj" />
+  </Folder>
+  <Project Path="HtmlTransformer/HtmlTransformer.csproj" />
+</Solution>

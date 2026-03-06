@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PackageId>HtmlTransformer</PackageId>
+        <Version>1.0.0</Version>
+        <Authors>mp</Authors>
+        <Description>A library for HTML injection and replacements in ASP.NET Core response streams.</Description>
+        <PackageProjectUrl>https://github.com/mp/HtmlStreamInjector</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/mp/HtmlStreamInjector.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>aspnetcore;html;injection;middleware;stream</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+</Project>
