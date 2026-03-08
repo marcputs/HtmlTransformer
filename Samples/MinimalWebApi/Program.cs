@@ -1,4 +1,5 @@
 using HtmlTransformer;
+using MinimalWebApi;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
@@ -6,19 +7,36 @@ var app = builder.Build();
 
 app.UseHtmlTransformer();
 
-app.MapGet("/", async context =>
+app.Use((context, next) =>
 {
-    context.Replace("[OS_USER]", Environment.UserName, ReplacementScope.Global);
-    context.Replace("[TIME]", ct => Task.FromResult(DateTime.Now.ToLongTimeString()));
+    // We can replace the first occurence of a placeholder:
+    context.Replace("[REPLACE_FIRST]", "(replaced first)");
 
-    context.InjectHtml("<title>Transformed!</title>", HtmlInjectionLocation.Head);
-    context.InjectHtml("""<button onclick="document.location.reload()">Reload</button>""", HtmlInjectionLocation.BodyEnd);
+    // Or every occurence:
+    context.Replace("[REPLACE_ALL]", "(replaced all)", ReplacementScope.Global);
 
-    // stream example.html to the response
-    // the transformations defined above will be applied to the file
-    var environment = context.RequestServices.GetRequiredService<IWebHostEnvironment>();
-    var filePath = Path.Combine(environment.ContentRootPath, "example.html");
-    await context.Response.SendFileAsync(filePath);
+    // We can inject some HTML at the start of the <head> element:
+    context.InjectHtml("<!-- added at start of head -->", HtmlInjectionLocation.Head);
+
+    // Or at the end of the <head> element:
+    context.InjectHtml("<!-- added at end of head -->", HtmlInjectionLocation.HeadEnd);
+
+    // Or at the end of the <body> element:
+    context.InjectHtml("<!-- added at end of body -->", HtmlInjectionLocation.BodyEnd);
+
+    return next();
+});
+
+app.MapGet("/", async Task (HttpContext context, IWebHostEnvironment environment) =>
+{
+    context.Replace("[RANDOM_COMMENT]", async ct =>
+    {
+        var comment = await CommentsService.FetchRandomComment(ct);
+        return comment?.Body ?? "A random comment was supposed to go here.";
+    });
+    
+    var file = Path.Combine(environment.ContentRootPath, "example.html");
+    await context.Response.SendFileAsync(file);
 });
 
 app.Run();
